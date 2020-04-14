@@ -1,0 +1,44 @@
+{
+  "name": "demianko.a/gendiff",
+  "homepage": "https://github.com/demiankoAnton/php-project-lvl2",
+  "description": "demianko.a gendiff",
+  "type": "project",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Anton Demianko",
+      "email": "demianko.a@gmail.com",
+      "role": "Developer"
+    }
+  ],
+
+  "bin": [
+    "bin/gendiff"
+  ],
+
+  "scripts": {
+    "phpcs": "phpcs",
+    "phpunit": "phpunit"
+  },
+
+
+  "autoload": {
+    "psr-4": {
+
+    },
+
+    "files": [
+      "src/GenDiff.php"
+    ]
+  },
+
+  "require": {
+    "php": ">=7.0.0",
+    "docopt/docopt": "^1.0"
+  },
+
+  "require-dev": {
+    "squizlabs/php_codesniffer": "*",
+    "phpunit/phpunit": "^8.5"
+  }
+}
