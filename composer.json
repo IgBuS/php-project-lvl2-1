@@ -28,7 +28,8 @@
     },
 
     "files": [
-      "src/GenDiff.php"
+      "src/Run.php",
+      "src/Differ.php"
     ]
   },
 
