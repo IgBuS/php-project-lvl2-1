@@ -36,5 +36,5 @@ function genDiff($firstFileData, $secondFileData)
     }
 
     $generatedDiff = implode("\n", $diffBuffer);
-    return "{\n{$generatedDiff}\n}";
+    return"{\n{$generatedDiff}\n}";
 }

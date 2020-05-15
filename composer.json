@@ -29,14 +29,16 @@
 
     "files": [
       "src/Run.php",
-      "src/Differ.php"
+      "src/Differ.php",
+      "src/Parsers.php"
     ]
   },
 
   "require": {
     "php": ">=7.0.0",
     "docopt/docopt": "^1.0",
-    "funct/funct": "^1.5"
+    "funct/funct": "^1.5",
+    "symfony/yaml": "^5.0"
   },
 
   "require-dev": {

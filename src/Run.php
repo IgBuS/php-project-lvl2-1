@@ -3,6 +3,7 @@
 namespace Differ\Run;
 
 use Docopt;
+use Differ\Parsers;
 
 use function Differ\Differ\genDiff;
 
@@ -28,11 +29,17 @@ DOC;
     $firstFilePath = realpath($args['<firstFile>']);
     $secondFilePath = realpath($args['<secondFile>']);
 
-    if ($firstFilePath && $secondFilePath) {
-        $firstFileData = json_decode(file_get_contents($firstFilePath), true);
-        $secondFileData = json_decode(file_get_contents($secondFilePath), true);
+    $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
+    $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
+
+    if ($firstFileFormat == 'json' && $secondFileFormat == 'json') {
+        $firstFileData = Parsers\jsonParser($firstFilePath);
+        $secondFileData = Parsers\jsonParser($secondFilePath);
+    } elseif ($firstFileFormat == 'yaml' && $secondFileFormat == 'yaml') {
+        $firstFileData = Parsers\yamlParser($firstFilePath);
+        $secondFileData = Parsers\yamlParser($secondFilePath);
     } else {
-        echo 'missing file!';
+        echo 'Wrong format or missing one of the file';
         return;
     }
 
