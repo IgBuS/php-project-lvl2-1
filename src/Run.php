@@ -5,7 +5,8 @@ namespace Differ\Run;
 use Docopt;
 use Differ\Parsers;
 
-use function Differ\Differ\genDiff;
+use function Differ\AstBuilder\astBuilder;
+use function Differ\Render\render;
 
 function run()
 {
@@ -43,5 +44,6 @@ DOC;
         return;
     }
 
-    genDiff($firstFileData, $secondFileData);
+    $ast = astBuilder($firstFileData, $secondFileData);
+    return render($ast);
 }

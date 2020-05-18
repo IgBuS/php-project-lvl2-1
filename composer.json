@@ -29,8 +29,9 @@
 
     "files": [
       "src/Run.php",
-      "src/Differ.php",
-      "src/Parsers.php"
+      "src/AstBuilder.php",
+      "src/Parsers.php",
+      "src/Render.php"
     ]
   },
 
