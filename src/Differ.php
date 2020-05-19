@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Run;
+namespace Differ\Differ;
 
 use Docopt;
 use Differ\Parsers;
@@ -8,7 +8,7 @@ use Differ\Parsers;
 use function Differ\AstBuilder\astBuilder;
 use function Differ\Render\render;
 
-function run()
+function genDiff()
 {
     $doc = <<<DOC
 Generate diff
@@ -41,9 +41,10 @@ DOC;
         $secondFileData = Parsers\yamlParser($secondFilePath);
     } else {
         echo 'Wrong format or missing one of the file';
-        return;
+        die();
     }
 
     $ast = astBuilder($firstFileData, $secondFileData);
-    return render($ast);
+
+    return render($ast, $args['--format']);
 }

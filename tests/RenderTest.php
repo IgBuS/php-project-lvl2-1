@@ -9,7 +9,7 @@ class RenderTest extends TestCase
 {
     public function testRender()
     {
-        $correctDiff = <<<EOT
+        $correctPrettyDiff = <<<EOT
 {
     common: {
         setting1: Value 1
@@ -36,42 +36,30 @@ class RenderTest extends TestCase
     }
 }
 EOT;
+        $correctPlainDiff = <<<EOT
+Property 'common.setting2' was removed
+Property 'common.setting6' was removed
+Property 'common.setting4' was added with value: 'blah blah'
+Property 'common.setting5' was added with value: 'complex value'
+Property 'group1.baz' was changed. From 'bas' to 'bars'
+Property 'group2' was removed
+Property 'group3' was added with value: 'complex value'
+EOT;
 
         $firstJsonFile = Parsers\jsonParser(__DIR__ . '/fixtures/before.json');
         $secondJsonFile = Parsers\jsonParser(__DIR__ . '/fixtures/after.json');
         $jsonAst = AstBuilder\astBuilder($firstJsonFile, $secondJsonFile);
-        $jsonDiff = Render\render($jsonAst);
-        $this->assertEquals($correctDiff, $jsonDiff);
+        $jsonPrettyDiff = Render\render($jsonAst);
+        $jsonPlainDiff = Render\render($jsonAst, 'plain');
+        $this->assertEquals($correctPrettyDiff, $jsonPrettyDiff);
+        $this->assertEquals($correctPlainDiff, $jsonPlainDiff);
 
         $firstYamlFile = Parsers\yamlParser(__DIR__ . '/fixtures/before.yaml');
         $secondYamlFile = Parsers\yamlParser(__DIR__ . '/fixtures/after.yaml');
         $yamlAst = AstBuilder\astBuilder($firstYamlFile, $secondYamlFile);
-        $yamlDiff = Render\render($yamlAst);
-        $this->assertEquals($correctDiff, $yamlDiff);
-    }
-
-
-
-    public function testValueType()
-    {
-        $bool = true;
-        $array = [];
-        $int = 10;
-
-        $this->assertEquals('true', Render\valueType($bool));
-        $this->assertEquals("{\n\n    }", Render\valueType($array));
-        $this->assertEquals(10, Render\valueType($int));
-    }
-
-    public function testArrayRender()
-    {
-        $userArray = [
-            'key' => 'value',
-            'key2' => 'value2'
-        ];
-
-        $correctOutput = "{\n        key: value\n        key2: value2\n    }";
-
-        $this->assertEquals($correctOutput, Render\arrayRender($userArray));
+        $yamlPrettyDiff = Render\render($yamlAst);
+        $yamlPlainDiff = Render\render($yamlAst, 'plain');
+        $this->assertEquals($correctPrettyDiff, $yamlPrettyDiff);
+        $this->assertEquals($correctPlainDiff, $yamlPlainDiff);
     }
 }
