@@ -1,5 +1,5 @@
 {
-  "name": "demianko.a/gendiff",
+  "name": "1demianko.a/gendiff",
   "homepage": "https://github.com/demiankoAnton/php-project-lvl2",
   "description": "demianko.a gendiff",
   "type": "project",
@@ -24,7 +24,8 @@
 
   "autoload": {
     "psr-4": {
-
+      "Differ\\Tests\\": "tests",
+      "Differ\\": "src"
     },
 
     "files": [

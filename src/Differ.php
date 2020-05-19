@@ -46,5 +46,5 @@ DOC;
 
     $ast = astBuilder($firstFileData, $secondFileData);
 
-    return render($ast, $args['--format']);
+    echo render($ast, $args['--format']);
 }
