@@ -29,6 +29,7 @@
     },
 
     "files": [
+      "src/Run.php",
       "src/Differ.php",
       "src/AstBuilder.php",
       "src/Parsers.php",

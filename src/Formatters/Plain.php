@@ -4,7 +4,7 @@ namespace Differ\Formatters\Plain;
 
 function plainFormatter($ast)
 {
-    return plainElementFormatter($ast, '');
+    return plainElementFormatter($ast);
 }
 
 function plainElementFormatter($ast, $path = '')

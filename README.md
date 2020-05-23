@@ -24,14 +24,27 @@ Too choose different format, just use ```--format``` flag with json, plain or pr
 
 [![asciicast](https://asciinema.org/a/331886.svg)](https://asciinema.org/a/331886)
 
-``gendiff --format pretty <firstFilePath> <secondFilePath>`` or ``gendiff <firstFilePath> <secondFilePath>`` to generate differences in pretty style:
+Flat json differences:<br>
+``gendiff <firstFilePath> <secondFilePath>``
 
-[![asciicast](https://asciinema.org/a/331897.svg)](https://asciinema.org/a/331897)
+[![asciicast](https://asciinema.org/a/333240.svg)](https://asciinema.org/a/333240)
 
-``gendiff --format json <firstFilePath> <secondFilePath>`` to generate differences in json format:
+Flat yaml differences:<br>
+``gendiff <firstFilePath> <secondFilePath>``
 
-[![asciicast](https://asciinema.org/a/331891.svg)](https://asciinema.org/a/331891)
+[![asciicast](https://asciinema.org/a/333245.svg)](https://asciinema.org/a/333245)
 
-``gendiff --format plain <firstFilePath> <secondFilePath>`` to generate differences in plain style:
+Nested json differences:<br>
+``gendiff <firstFilePath> <secondFilePath>``
 
-[![asciicast](https://asciinema.org/a/331890.svg)](https://asciinema.org/a/331890)
+[![asciicast](https://asciinema.org/a/333249.svg)](https://asciinema.org/a/333249)
+
+Nested plain output format differences:<br>
+``gendiff --format <firstFilePath> <secondFilePath>``
+
+[![asciicast](https://asciinema.org/a/333251.svg)](https://asciinema.org/a/333251)
+
+Nested json output format differences:<br>
+`` gendiff --format json <firstFilePath> <secondFilePath>``
+
+[![asciicast](https://asciinema.org/a/333252.svg)](https://asciinema.org/a/333252)
