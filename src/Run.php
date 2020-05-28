@@ -3,9 +3,9 @@
 namespace Differ\Run;
 
 use Docopt;
-use Differ\Parsers;
 
 use function Differ\Differ\genDiff;
+use function Differ\Render\render;
 
 function run()
 {
@@ -29,21 +29,7 @@ DOC;
     $firstFilePath = realpath($args['<firstFile>']);
     $secondFilePath = realpath($args['<secondFile>']);
 
-    $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
-    $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
+    $diff = genDiff($firstFilePath, $secondFilePath);
 
-    if ($firstFileFormat == 'json' && $secondFileFormat == 'json') {
-        $firstFileData = Parsers\jsonParser($firstFilePath);
-        $secondFileData = Parsers\jsonParser($secondFilePath);
-    } elseif ($firstFileFormat == 'yaml' && $secondFileFormat == 'yaml') {
-        $firstFileData = Parsers\yamlParser($firstFilePath);
-        $secondFileData = Parsers\yamlParser($secondFilePath);
-    } else {
-        echo 'Wrong format or missing one of the file';
-        die();
-    }
-
-    $diff = genDiff($firstFileData, $secondFileData, $args['--format']);
-
-    echo $diff;
+    echo render($diff, $args['--format']);
 }

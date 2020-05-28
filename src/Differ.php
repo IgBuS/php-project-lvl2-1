@@ -2,14 +2,26 @@
 
 namespace Differ\Differ;
 
+use Differ\Parsers;
+
 use function Differ\AstBuilder\astBuilder;
-use function Differ\Render\render;
 
-function genDiff($firstFileData, $secondFileData, $format)
+function genDiff($firstFilePath, $secondFilePath)
 {
+    $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
+    $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
 
-    $ast = astBuilder($firstFileData, $secondFileData);
-    $diff = render($ast, $format);
+    if ($firstFileFormat == 'json' && $secondFileFormat == 'json') {
+        $firstFileData = Parsers\jsonParser($firstFilePath);
+        $secondFileData = Parsers\jsonParser($secondFilePath);
+    } elseif ($firstFileFormat == 'yaml' && $secondFileFormat == 'yaml') {
+        $firstFileData = Parsers\yamlParser($firstFilePath);
+        $secondFileData = Parsers\yamlParser($secondFilePath);
+    } else {
+        echo 'Wrong format or missing one of the file';
+        die();
+    }
 
-    return $diff;
+
+    return astBuilder($firstFileData, $secondFileData);
 }
