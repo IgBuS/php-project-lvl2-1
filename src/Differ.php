@@ -5,8 +5,11 @@ namespace Differ\Differ;
 use Differ\Parsers;
 
 use function Differ\AstBuilder\astBuilder;
+use function Differ\Formatters\Json\jsonFormatter;
+use function Differ\Formatters\Plain\plainFormatter;
+use function Differ\Formatters\Pretty\prettyFormatter;
 
-function genDiff($firstFilePath, $secondFilePath)
+function genDiff($firstFilePath, $secondFilePath, $format)
 {
     $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
     $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
@@ -22,6 +25,15 @@ function genDiff($firstFilePath, $secondFilePath)
         die();
     }
 
+    $diffAst = astBuilder($firstFileData, $secondFileData);
 
-    return astBuilder($firstFileData, $secondFileData);
+    if ($format === 'json') {
+        $renderedDiff = jsonFormatter($diffAst);
+    } elseif ($format === 'plain') {
+        $renderedDiff = plainFormatter($diffAst);
+    } else {
+        $renderedDiff = prettyFormatter($diffAst);
+    }
+
+    return $renderedDiff;
 }

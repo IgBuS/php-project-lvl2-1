@@ -33,7 +33,6 @@
       "src/Differ.php",
       "src/AstBuilder.php",
       "src/Parsers.php",
-      "src/Render.php",
       "src/Formatters/Json.php",
       "src/Formatters/Plain.php",
       "src/Formatters/Pretty.php"

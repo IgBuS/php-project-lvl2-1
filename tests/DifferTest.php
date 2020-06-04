@@ -13,23 +13,24 @@ class DifferTest extends TestCase
     protected $correctPretty;
     protected $correctPlain;
 
-    protected $jsonAst;
-    protected $yamlAst;
-
     protected function setUp(): void
     {
-        $this->correctJson = file_get_contents(__DIR__ . "/fixtures/correct/correct_json");
-        $this->correctPretty = file_get_contents(__DIR__ . "/fixtures/correct/correct_pretty");
-        $this->correctPlain = file_get_contents(__DIR__ . "/fixtures/correct/correct_plain");
+        $this->correctJson = file_get_contents($this->getFilePath('correct/correct_json'));
+        $this->correctPretty = file_get_contents($this->getFilePath('correct/correct_pretty'));
+        $this->correctPlain = file_get_contents($this->getFilePath('correct/correct_plain'));
+    }
 
-        $this->jsonAst = genDiff(__DIR__ . "/fixtures/before.json", __DIR__ . "/fixtures/after.json");
-        $this->yamlAst = genDiff(__DIR__ . "/fixtures/before.yaml", __DIR__ . "/fixtures/after.yaml");
+    public function getFilePath($path)
+    {
+        $pathToDir = __DIR__;
+
+        return "{$pathToDir}/fixtures/{$path}";
     }
 
     public function testPlainDiff()
     {
-        $jsonDiff = render($this->jsonAst, 'plain');
-        $yamlDiff = render($this->yamlAst, 'plain');
+        $jsonDiff = genDiff($this->getFilePath('before.json'), $this->getFilePath('after.json'), 'plain');
+        $yamlDiff = genDiff($this->getFilePath('before.yaml'), $this->getFilePath('after.yaml'), 'plain');
 
         $this->assertEquals($this->correctPlain, $jsonDiff);
         $this->assertEquals($this->correctPlain, $yamlDiff);
@@ -37,8 +38,8 @@ class DifferTest extends TestCase
 
     public function testPrettyDiff()
     {
-        $jsonDiff = render($this->jsonAst);
-        $yamlDiff = render($this->yamlAst);
+        $jsonDiff = genDiff($this->getFilePath('before.json'), $this->getFilePath('after.json'), 'pretty');
+        $yamlDiff = genDiff($this->getFilePath('before.yaml'), $this->getFilePath('after.yaml'), 'pretty');
 
         $this->assertEquals($this->correctPretty, $jsonDiff);
         $this->assertEquals($this->correctPretty, $yamlDiff);
@@ -46,8 +47,8 @@ class DifferTest extends TestCase
 
     public function testJsonDiff()
     {
-        $jsonDiff = render($this->jsonAst, 'json');
-        $yamlDiff = render($this->yamlAst, 'json');
+        $jsonDiff = genDiff($this->getFilePath('before.json'), $this->getFilePath('after.json'), 'json');
+        $yamlDiff = genDiff($this->getFilePath('before.yaml'), $this->getFilePath('after.yaml'), 'json');
 
         $this->assertEquals($this->correctJson, $jsonDiff);
         $this->assertEquals($this->correctJson, $yamlDiff);

@@ -5,7 +5,6 @@ namespace Differ\Run;
 use Docopt;
 
 use function Differ\Differ\genDiff;
-use function Differ\Render\render;
 
 function run()
 {
@@ -29,7 +28,5 @@ DOC;
     $firstFilePath = realpath($args['<firstFile>']);
     $secondFilePath = realpath($args['<secondFile>']);
 
-    $diff = genDiff($firstFilePath, $secondFilePath);
-
-    echo render($diff, $args['--format']);
+    echo genDiff($firstFilePath, $secondFilePath, $args['--format']);
 }
