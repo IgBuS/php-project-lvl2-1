@@ -2,7 +2,7 @@
 
 namespace Differ\Formatters\Json;
 
-function jsonFormatter($ast)
+function formatToJson($ast)
 {
     return json_encode($ast);
 }

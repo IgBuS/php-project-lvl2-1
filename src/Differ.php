@@ -4,36 +4,52 @@ namespace Differ\Differ;
 
 use Differ\Parsers;
 
-use function Differ\AstBuilder\astBuilder;
-use function Differ\Formatters\Json\jsonFormatter;
-use function Differ\Formatters\Plain\plainFormatter;
-use function Differ\Formatters\Pretty\prettyFormatter;
+use function Differ\AstBuilder\generateAst;
+use function Differ\Formatters\Json\formatToJson;
+use function Differ\Formatters\Plain\formatToPlain;
+use function Differ\Formatters\Pretty\formatToPretty;
+
+const SUPPORTED_FORMATS = ['json', 'yaml'];
 
 function genDiff($firstFilePath, $secondFilePath, $format)
 {
     $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
     $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
 
-    if ($firstFileFormat == 'json' && $secondFileFormat == 'json') {
-        $firstFileData = Parsers\jsonParser($firstFilePath);
-        $secondFileData = Parsers\jsonParser($secondFilePath);
-    } elseif ($firstFileFormat == 'yaml' && $secondFileFormat == 'yaml') {
-        $firstFileData = Parsers\yamlParser($firstFilePath);
-        $secondFileData = Parsers\yamlParser($secondFilePath);
-    } else {
-        echo 'Wrong format or missing one of the file';
-        die();
+
+
+    try {
+        if (!in_array($firstFileFormat, SUPPORTED_FORMATS) || !in_array($secondFileFormat, SUPPORTED_FORMATS)) {
+            throw new \Exception("Wrong format or missing one of the files");
+        }
+    } catch (\Exception $diffError) {
+        return $diffError->getMessage();
     }
 
-    $diffAst = astBuilder($firstFileData, $secondFileData);
+    $firstFileData = Parsers\formatParser($firstFilePath, $firstFileFormat);
+    $secondFileData = Parsers\formatParser($secondFilePath, $secondFileFormat);
+
+    $diffAst = generateAst($firstFileData, $secondFileData);
 
     if ($format === 'json') {
-        $renderedDiff = jsonFormatter($diffAst);
+        $renderedDiff = formatToJson($diffAst);
     } elseif ($format === 'plain') {
-        $renderedDiff = plainFormatter($diffAst);
+        $renderedDiff = formatToPlain($diffAst);
     } else {
-        $renderedDiff = prettyFormatter($diffAst);
+        $renderedDiff = formatToPretty($diffAst);
     }
 
     return $renderedDiff;
 }
+
+/*function getFileData($filePath)
+{
+    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
+
+    if (!$extension) {
+        throw new \Exception('File {$filePath} not found');
+        return false;
+    }
+
+    return file_get_contents($filePath);
+}*/

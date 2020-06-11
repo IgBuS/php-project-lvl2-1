@@ -2,44 +2,42 @@
 
 namespace Differ\Formatters\Pretty;
 
-function prettyFormatter($ast)
+function formatToPretty($ast)
 {
-    $renderedDiff = prettyElementFormatter($ast);
+    $renderedDiff = formatElementToPretty($ast);
 
     return "{\n{$renderedDiff}\n}";
 }
 
-function prettyElementFormatter($ast, $nestingLevel = 0)
+function formatElementToPretty($ast, $nestingLevel = 0)
 {
     $nesting = str_repeat('    ', $nestingLevel);
 
     $renderedDiff = array_reduce($ast, function ($acc, $astElement) use ($nesting, $nestingLevel) {
-        if ($astElement['status'] == 'array') {
-            $element = prettyElementFormatter($astElement['children'], $nestingLevel + 1);
-            $acc[] = "{$nesting}    {$astElement['name']}: {\n{$element}\n    {$nesting}}";
-        }
+        switch ($astElement['status']) {
+            case 'nested':
+                $element = formatElementToPretty($astElement['children'], $nestingLevel + 1);
+                $acc[] = "{$nesting}    {$astElement['name']}: {\n{$element}\n    {$nesting}}";
+                break;
+            case 'added':
+                $value = getProperValue($astElement['value'], $nestingLevel);
+                $acc[] = " {$nesting} + {$astElement['name']}: {$value}";
+                break;
+            case 'deleted':
+                $value = getProperValue($astElement['value'], $nestingLevel);
+                $acc[] = "{$nesting}  - {$astElement['name']}: {$value}";
+                break;
+            case 'changed':
+                $prevValue = getProperValue($astElement['prevValue'], $nestingLevel);
+                $curValue = getProperValue($astElement['curValue'], $nestingLevel);
 
-        if ($astElement['status'] == 'added') {
-            $value = valueType($astElement['value'], $nestingLevel);
-            $acc[] = " {$nesting} + {$astElement['name']}: {$value}";
-        }
-
-        if ($astElement['status'] == 'deleted') {
-            $value = valueType($astElement['value'], $nestingLevel);
-            $acc[] = "{$nesting}  - {$astElement['name']}: {$value}";
-        }
-
-        if ($astElement['status'] == 'changed') {
-            $prevValue = valueType($astElement['prevValue'], $nestingLevel);
-            $curValue = valueType($astElement['curValue'], $nestingLevel);
-
-            $acc[] = "{$nesting}  + {$astElement['name']}: {$curValue}";
-            $acc[] = "{$nesting}  - {$astElement['name']}: {$prevValue}";
-        }
-
-        if ($astElement['status'] == 'unchanged') {
-            $value = valueType($astElement['value'], $nestingLevel);
-            $acc[] = "{$nesting}    {$astElement['name']}: {$value}";
+                $acc[] = "{$nesting}  + {$astElement['name']}: {$curValue}";
+                $acc[] = "{$nesting}  - {$astElement['name']}: {$prevValue}";
+                break;
+            case 'unchanged':
+                $value = getProperValue($astElement['value'], $nestingLevel);
+                $acc[] = "{$nesting}    {$astElement['name']}: {$value}";
+                break;
         }
 
         return $acc;
@@ -49,10 +47,10 @@ function prettyElementFormatter($ast, $nestingLevel = 0)
     return "{$result}";
 }
 
-function valueType($value, $nestingLevel = 0)
+function getProperValue($value, $nestingLevel = 0)
 {
     if (is_array($value)) {
-        return arrayFormatter($value, $nestingLevel);
+        return formatNestedValue($value, $nestingLevel);
     }
 
     if (is_bool($value)) {
@@ -62,7 +60,7 @@ function valueType($value, $nestingLevel = 0)
     return $value;
 }
 
-function arrayFormatter($value, $nestingLevel = 0)
+function formatNestedValue($value, $nestingLevel = 0)
 {
     $keys = array_keys($value);
     $nesting = str_repeat('    ', $nestingLevel + 1);

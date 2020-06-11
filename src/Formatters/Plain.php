@@ -2,12 +2,12 @@
 
 namespace Differ\Formatters\Plain;
 
-function plainFormatter($ast)
+function formatToPlain($ast)
 {
-    return plainElementFormatter($ast);
+    return formatElementToPlain($ast);
 }
 
-function plainElementFormatter($ast, $path = '')
+function formatElementToPlain($ast, $path = '')
 {
     $result = array_reduce($ast, function ($acc, $astElement) use ($path) {
         if ($path === '') {
@@ -16,24 +16,23 @@ function plainElementFormatter($ast, $path = '')
             $path = "{$path}.{$astElement['name']}";
         }
 
-        if ($astElement['status'] == 'array') {
-            $element = plainElementFormatter($astElement['children'], "{$path}");
-            $acc[] = $element;
-        }
-
-        if ($astElement['status'] == 'added') {
-            $value = valueType($astElement['value']);
-            $acc[] = "Property '{$path}' was added with value: '{$value}'";
-        }
-
-        if ($astElement['status'] == 'deleted') {
-            $acc[] = "Property '{$path}' was removed";
-        }
-
-        if ($astElement['status'] == 'changed') {
-            $prevValue = valueType($astElement['prevValue']);
-            $curValue = valueType($astElement['curValue']);
-            $acc[] = "Property '{$path}' was changed. From '{$prevValue}' to '{$curValue}'";
+        switch ($astElement['status']) {
+            case 'nested':
+                $element = formatElementToPlain($astElement['children'], "{$path}");
+                $acc[] = $element;
+                break;
+            case 'added':
+                $value = getProperValue($astElement['value']);
+                $acc[] = "Property '{$path}' was added with value: '{$value}'";
+                break;
+            case 'deleted':
+                $acc[] = "Property '{$path}' was removed";
+                break;
+            case 'changed':
+                $prevValue = getProperValue($astElement['prevValue']);
+                $curValue = getProperValue($astElement['curValue']);
+                $acc[] = "Property '{$path}' was changed. From '{$prevValue}' to '{$curValue}'";
+                break;
         }
 
         return $acc;
@@ -42,7 +41,7 @@ function plainElementFormatter($ast, $path = '')
     return implode("\n", $result);
 }
 
-function valueType($value)
+function getProperValue($value)
 {
     if (is_bool($value)) {
         return $value ? 'true' : 'false';

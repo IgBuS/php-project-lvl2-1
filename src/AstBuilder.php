@@ -4,41 +4,38 @@ namespace Differ\AstBuilder;
 
 use function Funct\Collection\union;
 
-function astBuilder($firstData, $secondData)
+function generateAst($firstData, $secondData)
 {
-    $keys = union(array_keys($firstData), array_keys($secondData));
+    $keys = array_values(union(array_keys($firstData), array_keys($secondData)));
 
-    $ast = array_reduce($keys, function ($acc, $key) use ($firstData, $secondData) {
+    $ast = array_map(function ($key) use ($firstData, $secondData) {
         if (!array_key_exists($key, $firstData)) {
-            $acc[] = ['name' => $key, 'value' => $secondData[$key], 'status' => 'added'];
-            return $acc;
+            return ['name' => $key, 'value' => $secondData[$key], 'status' => 'added'];
         }
 
         if (!array_key_exists($key, $secondData)) {
-            $acc[] = ['name' => $key, 'value' => $firstData[$key], 'status' => 'deleted'];
-            return $acc;
+            return ['name' => $key, 'value' => $firstData[$key], 'status' => 'deleted'];
         }
 
         if (is_array($firstData[$key]) && is_array($secondData[$key])) {
-            $acc[] = [
+            return [
                 'name' => $key,
-                'children' => astBuilder($firstData[$key], $secondData[$key]),
-                'status' => 'array'
+                'children' => generateAst($firstData[$key], $secondData[$key]),
+                'status' => 'nested'
             ];
-            return $acc;
         }
 
         if ($firstData[$key] !== $secondData[$key]) {
-            $acc[] = ['name' => $key, 'prevValue' => $firstData[$key],
-                      'curValue' => $secondData[$key], 'status' => 'changed'];
-            return $acc;
+            return [
+                'name' => $key, 'prevValue' => $firstData[$key],
+                'curValue' => $secondData[$key], 'status' => 'changed'
+                ];
         }
 
         if ($firstData[$key] === $secondData[$key]) {
-            $acc[] = ['name' => $key, 'value' => $firstData[$key], 'status' => 'unchanged'];
-            return $acc;
+            return ['name' => $key, 'value' => $firstData[$key], 'status' => 'unchanged'];
         }
-    }, []);
+    }, $keys);
 
     return $ast;
 }
