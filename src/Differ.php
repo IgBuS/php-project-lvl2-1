@@ -41,15 +41,3 @@ function genDiff($firstFilePath, $secondFilePath, $format)
 
     return $renderedDiff;
 }
-
-/*function getFileData($filePath)
-{
-    $extension = pathinfo($filePath, PATHINFO_EXTENSION);
-
-    if (!$extension) {
-        throw new \Exception('File {$filePath} not found');
-        return false;
-    }
-
-    return file_get_contents($filePath);
-}*/
