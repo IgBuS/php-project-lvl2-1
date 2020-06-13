@@ -28,5 +28,9 @@ DOC;
     $firstFilePath = realpath($args['<firstFile>']);
     $secondFilePath = realpath($args['<secondFile>']);
 
-    echo genDiff($firstFilePath, $secondFilePath, $args['--format']);
+    try {
+        echo genDiff($firstFilePath, $secondFilePath, $args['--format']);
+    } catch (\Exception $exception) {
+        echo "{$exception->getMessage()}";
+    }
 }
