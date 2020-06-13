@@ -16,9 +16,9 @@ function genDiff($firstFilePath, $secondFilePath, $format)
     $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
     $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
 
-        if (!in_array($firstFileFormat, SUPPORTED_FORMATS) || !in_array($secondFileFormat, SUPPORTED_FORMATS)) {
-            throw new \Exception("Wrong format or missing one of the files");
-        }
+    if (!in_array($firstFileFormat, SUPPORTED_FORMATS) || !in_array($secondFileFormat, SUPPORTED_FORMATS)) {
+        throw new \Exception("Wrong format or missing one of the files");
+    }
 
 
     $firstFileData = Parsers\formatParser($firstFilePath, $firstFileFormat);
