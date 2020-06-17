@@ -32,7 +32,7 @@
       "src/Run.php",
       "src/Differ.php",
       "src/AstBuilder.php",
-      "src/Parsers.php",
+      "src/Parser.php",
       "src/Formatters/Json.php",
       "src/Formatters/Plain.php",
       "src/Formatters/Pretty.php"

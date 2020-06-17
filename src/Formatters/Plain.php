@@ -16,6 +16,8 @@ function formatElementToPlain($ast, $path = '')
             $path = "{$path}.{$astElement['name']}";
         }
 
+        //$path = $path === '' ? $path = "{$astElement['name']}" : $path = "{$path}.{$astElement['name']}";
+
         switch ($astElement['status']) {
             case 'nested':
                 $element = formatElementToPlain($astElement['children'], "{$path}");
@@ -25,13 +27,13 @@ function formatElementToPlain($ast, $path = '')
                 $value = getProperValue($astElement['value']);
                 $acc[] = "Property '{$path}' was added with value: '{$value}'";
                 break;
-            case 'deleted':
-                $acc[] = "Property '{$path}' was removed";
-                break;
             case 'changed':
                 $prevValue = getProperValue($astElement['prevValue']);
                 $curValue = getProperValue($astElement['curValue']);
                 $acc[] = "Property '{$path}' was changed. From '{$prevValue}' to '{$curValue}'";
+                break;
+            case 'deleted':
+                $acc[] = "Property '{$path}' was removed";
                 break;
         }
 

@@ -8,6 +8,7 @@ use function Differ\AstBuilder\generateAst;
 use function Differ\Formatters\Json\formatToJson;
 use function Differ\Formatters\Plain\formatToPlain;
 use function Differ\Formatters\Pretty\formatToPretty;
+use function Differ\Parser\parse;
 
 const SUPPORTED_FORMATS = ['json', 'yaml'];
 
@@ -20,9 +21,8 @@ function genDiff($firstFilePath, $secondFilePath, $format)
         throw new \Exception("Wrong format or missing one of the files");
     }
 
-
-    $firstFileData = Parsers\formatParser($firstFilePath, $firstFileFormat);
-    $secondFileData = Parsers\formatParser($secondFilePath, $secondFileFormat);
+    $firstFileData = parse(file_get_contents($firstFilePath), $firstFileFormat);
+    $secondFileData = parse(file_get_contents($secondFilePath), $secondFileFormat);
 
     $diffAst = generateAst($firstFileData, $secondFileData);
 

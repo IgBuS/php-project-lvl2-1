@@ -6,7 +6,7 @@ use function Funct\Collection\union;
 
 function generateAst($firstData, $secondData)
 {
-    $keys = array_values(union(array_keys($firstData), array_keys($secondData)));
+    $keys = array_unique(array_merge(array_keys($firstData), array_keys($secondData)));
 
     $ast = array_map(function ($key) use ($firstData, $secondData) {
         if (!array_key_exists($key, $firstData)) {
@@ -29,13 +29,12 @@ function generateAst($firstData, $secondData)
             return [
                 'name' => $key, 'prevValue' => $firstData[$key],
                 'curValue' => $secondData[$key], 'status' => 'changed'
-                ];
+            ];
         }
 
         if ($firstData[$key] === $secondData[$key]) {
             return ['name' => $key, 'value' => $firstData[$key], 'status' => 'unchanged'];
         }
     }, $keys);
-
     return $ast;
 }

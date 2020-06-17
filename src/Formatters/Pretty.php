@@ -13,35 +13,33 @@ function formatElementToPretty($ast, $nestingLevel = 0)
 {
     $nesting = str_repeat('    ', $nestingLevel);
 
-    $renderedDiff = array_reduce($ast, function ($acc, $astElement) use ($nesting, $nestingLevel) {
+    $renderedDiff = array_map(function ($astElement) use ($nesting, $nestingLevel) {
         switch ($astElement['status']) {
             case 'nested':
                 $element = formatElementToPretty($astElement['children'], $nestingLevel + 1);
-                $acc[] = "{$nesting}    {$astElement['name']}: {\n{$element}\n    {$nesting}}";
+                $currentElement = "{$nesting}    {$astElement['name']}: {\n{$element}\n    {$nesting}}";
                 break;
             case 'added':
                 $value = getProperValue($astElement['value'], $nestingLevel);
-                $acc[] = " {$nesting} + {$astElement['name']}: {$value}";
+                $currentElement = " {$nesting} + {$astElement['name']}: {$value}";
                 break;
             case 'deleted':
                 $value = getProperValue($astElement['value'], $nestingLevel);
-                $acc[] = "{$nesting}  - {$astElement['name']}: {$value}";
+                $currentElement = "{$nesting}  - {$astElement['name']}: {$value}";
                 break;
             case 'changed':
                 $prevValue = getProperValue($astElement['prevValue'], $nestingLevel);
                 $curValue = getProperValue($astElement['curValue'], $nestingLevel);
 
-                $acc[] = "{$nesting}  + {$astElement['name']}: {$curValue}";
-                $acc[] = "{$nesting}  - {$astElement['name']}: {$prevValue}";
+                $currentElement = "{$nesting}  + {$astElement['name']}: {$curValue}\n{$nesting}  - {$astElement['name']}: {$prevValue}";
                 break;
-            case 'unchanged':
+            default:
                 $value = getProperValue($astElement['value'], $nestingLevel);
-                $acc[] = "{$nesting}    {$astElement['name']}: {$value}";
-                break;
+                $currentElement = "{$nesting}    {$astElement['name']}: {$value}";
         }
 
-        return $acc;
-    }, []);
+        return $currentElement;
+    }, $ast);
 
     $result = implode("\n", $renderedDiff);
     return "{$result}";
