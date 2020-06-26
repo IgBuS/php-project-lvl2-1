@@ -4,7 +4,12 @@ namespace Differ\AstBuilder;
 
 use function Funct\Collection\union;
 
-function generateAst($firstData, $secondData)
+/**
+ * @param array $firstData
+ * @param array $secondData
+ * @return array
+ */
+function generateAst(array $firstData, array $secondData): array
 {
     $keys = array_values(union(array_keys($firstData), array_keys($secondData)));
 
@@ -36,5 +41,6 @@ function generateAst($firstData, $secondData)
             return ['name' => $key, 'value' => $firstData[$key], 'status' => 'unchanged'];
         }
     }, $keys);
+
     return $ast;
 }

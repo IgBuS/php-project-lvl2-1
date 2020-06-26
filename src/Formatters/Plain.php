@@ -5,7 +5,11 @@ namespace Differ\Formatters\Plain;
 use function Funct\Collection\flattenAll;
 use function Funct\Collection\compact;
 
-function formatToPlain($ast)
+/**
+ * @param array $ast
+ * @return string
+ */
+function formatToPlain(array $ast): string
 {
     $formattedElements = formatElementToPlain($ast);
     $result = compact(flattenAll($formattedElements));
@@ -13,7 +17,12 @@ function formatToPlain($ast)
     return implode("\n", $result);
 }
 
-function formatElementToPlain($ast, $path = '')
+/**
+ * @param array $ast
+ * @param string $path
+ * @return array
+ */
+function formatElementToPlain(array $ast, string $path = ''): array
 {
     $result = array_map(function ($astElement) use ($path) {
 
@@ -46,7 +55,11 @@ function formatElementToPlain($ast, $path = '')
     return $result;
 }
 
-function getProperValue($value)
+/**
+ * @param mixed $value
+ * @return string
+ */
+function getProperValue($value): string
 {
     if (is_bool($value)) {
         return $value ? 'true' : 'false';

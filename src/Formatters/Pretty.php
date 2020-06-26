@@ -2,14 +2,23 @@
 
 namespace Differ\Formatters\Pretty;
 
-function formatToPretty($ast)
+/**
+ * @param array $ast
+ * @return string
+ */
+function formatToPretty(array $ast): string
 {
     $renderedDiff = formatElementToPretty($ast);
 
     return "{\n{$renderedDiff}\n}";
 }
 
-function formatElementToPretty($ast, $nestingLevel = 0)
+/**
+ * @param array $ast
+ * @param int $nestingLevel
+ * @return string
+ */
+function formatElementToPretty(array $ast, int $nestingLevel = 0): string
 {
     $nesting = str_repeat('    ', $nestingLevel);
 
@@ -47,7 +56,12 @@ function formatElementToPretty($ast, $nestingLevel = 0)
     return "{$result}";
 }
 
-function getProperValue($value, $nestingLevel = 0)
+/**
+ * @param mixed $value
+ * @param int $nestingLevel
+ * @return string
+ */
+function getProperValue($value, int $nestingLevel = 0): string
 {
     if (is_array($value)) {
         return formatNestedValue($value, $nestingLevel);
@@ -60,7 +74,12 @@ function getProperValue($value, $nestingLevel = 0)
     return $value;
 }
 
-function formatNestedValue($value, $nestingLevel = 0)
+/**
+ * @param mixed $value
+ * @param int $nestingLevel
+ * @return string
+ */
+function formatNestedValue($value, int $nestingLevel = 0): string
 {
     $keys = array_keys($value);
     $nesting = str_repeat('    ', $nestingLevel + 1);

@@ -8,7 +8,14 @@ use function Differ\Formatters\Plain\formatToPlain;
 use function Differ\Formatters\Pretty\formatToPretty;
 use function Differ\Parser\parse;
 
-function genDiff($firstFilePath, $secondFilePath, $format)
+/**
+ * @param string $firstFilePath
+ * @param string $secondFilePath
+ * @param string $format
+ * @return string
+ * @throws \Exception
+ */
+function genDiff(string $firstFilePath, string $secondFilePath, string $format): string
 {
     if (!$firstFilePath || !$secondFilePath) {
         throw new \Exception("Missing one of the files");
@@ -17,16 +24,8 @@ function genDiff($firstFilePath, $secondFilePath, $format)
     $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
     $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
 
-    try {
-        $firstFileData = parse(file_get_contents($firstFilePath), $firstFileFormat);
-        $secondFileData = parse(file_get_contents($secondFilePath), $secondFileFormat);
-    } catch (\Exception $exception) {
-        return $exception->getMessage();
-    }
-
-
-
-
+    $firstFileData = parse(file_get_contents($firstFilePath), $firstFileFormat);
+    $secondFileData = parse(file_get_contents($secondFilePath), $secondFileFormat);
 
     $diffAst = generateAst($firstFileData, $secondFileData);
 

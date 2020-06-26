@@ -6,7 +6,10 @@ use Docopt;
 
 use function Differ\Differ\genDiff;
 
-function run()
+/**
+ * @return string
+ */
+function run(): string
 {
     $doc = <<<DOC
 Generate diff
@@ -31,6 +34,6 @@ DOC;
     try {
         echo genDiff($firstFilePath, $secondFilePath, $args['--format']);
     } catch (\Exception $exception) {
-        echo "{$exception->getMessage()}";
+        echo $exception->getMessage();
     }
 }

@@ -2,7 +2,18 @@
 
 namespace Differ\Formatters\Json;
 
-function formatToJson($ast)
+/**
+ * @param $ast
+ * @return string
+ * @throws \Exception
+ */
+function formatToJson(array $ast): string
 {
-    return json_encode($ast);
+    $formattedJson = json_encode($ast);
+
+    if (!$formattedJson) {
+        throw new \Exception('json Encode error');
+    }
+
+    return $formattedJson;
 }

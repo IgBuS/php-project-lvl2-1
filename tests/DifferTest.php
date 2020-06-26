@@ -14,6 +14,7 @@ class DifferTest extends TestCase
      * @param $secondFile
      * @param $correctDiff
      *
+     * @throws \Exception
      * @dataProvider providerDiffData
      */
 
