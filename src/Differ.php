@@ -2,36 +2,43 @@
 
 namespace Differ\Differ;
 
-use Differ\Parsers;
-
 use function Differ\AstBuilder\generateAst;
 use function Differ\Formatters\Json\formatToJson;
 use function Differ\Formatters\Plain\formatToPlain;
 use function Differ\Formatters\Pretty\formatToPretty;
 use function Differ\Parser\parse;
 
-const SUPPORTED_FORMATS = ['json', 'yaml'];
-
 function genDiff($firstFilePath, $secondFilePath, $format)
 {
+    if (!$firstFilePath || !$secondFilePath) {
+        throw new \Exception("Missing one of the files");
+    }
+
     $firstFileFormat = pathinfo($firstFilePath, PATHINFO_EXTENSION);
     $secondFileFormat = pathinfo($secondFilePath, PATHINFO_EXTENSION);
 
-    if (!in_array($firstFileFormat, SUPPORTED_FORMATS) || !in_array($secondFileFormat, SUPPORTED_FORMATS)) {
-        throw new \Exception("Wrong format or missing one of the files");
+    try {
+        $firstFileData = parse(file_get_contents($firstFilePath), $firstFileFormat);
+        $secondFileData = parse(file_get_contents($secondFilePath), $secondFileFormat);
+    } catch (\Exception $exception) {
+        return $exception->getMessage();
     }
 
-    $firstFileData = parse(file_get_contents($firstFilePath), $firstFileFormat);
-    $secondFileData = parse(file_get_contents($secondFilePath), $secondFileFormat);
+
+
+
 
     $diffAst = generateAst($firstFileData, $secondFileData);
 
-    if ($format === 'json') {
-        $renderedDiff = formatToJson($diffAst);
-    } elseif ($format === 'plain') {
-        $renderedDiff = formatToPlain($diffAst);
-    } else {
-        $renderedDiff = formatToPretty($diffAst);
+    switch ($format) {
+        case 'json':
+            $renderedDiff = formatToJson($diffAst);
+            break;
+        case 'plain':
+            $renderedDiff = formatToPlain($diffAst);
+            break;
+        default:
+            $renderedDiff = formatToPretty($diffAst);
     }
 
     return $renderedDiff;

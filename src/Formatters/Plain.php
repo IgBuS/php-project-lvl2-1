@@ -2,45 +2,48 @@
 
 namespace Differ\Formatters\Plain;
 
+use function Funct\Collection\flattenAll;
+use function Funct\Collection\compact;
+
 function formatToPlain($ast)
 {
-    return formatElementToPlain($ast);
+    $formattedElements = formatElementToPlain($ast);
+    $result = compact(flattenAll($formattedElements));
+
+    return implode("\n", $result);
 }
 
 function formatElementToPlain($ast, $path = '')
 {
-    $result = array_reduce($ast, function ($acc, $astElement) use ($path) {
-        if ($path === '') {
-            $path = "{$astElement['name']}";
-        } else {
-            $path = "{$path}.{$astElement['name']}";
-        }
+    $result = array_map(function ($astElement) use ($path) {
 
-        //$path = $path === '' ? $path = "{$astElement['name']}" : $path = "{$path}.{$astElement['name']}";
+        $path = $path === '' ? $path = "{$astElement['name']}" : $path = "{$path}.{$astElement['name']}";
 
         switch ($astElement['status']) {
             case 'nested':
                 $element = formatElementToPlain($astElement['children'], "{$path}");
-                $acc[] = $element;
                 break;
             case 'added':
                 $value = getProperValue($astElement['value']);
-                $acc[] = "Property '{$path}' was added with value: '{$value}'";
+                $element = "Property '{$path}' was added with value: '{$value}'";
                 break;
             case 'changed':
                 $prevValue = getProperValue($astElement['prevValue']);
                 $curValue = getProperValue($astElement['curValue']);
-                $acc[] = "Property '{$path}' was changed. From '{$prevValue}' to '{$curValue}'";
+                $element = "Property '{$path}' was changed. From '{$prevValue}' to '{$curValue}'";
                 break;
             case 'deleted':
-                $acc[] = "Property '{$path}' was removed";
+                $element = "Property '{$path}' was removed";
                 break;
+            default:
+                return null;
         }
 
-        return $acc;
-    }, []);
+        return $element;
+    }, $ast);
 
-    return implode("\n", $result);
+
+    return $result;
 }
 
 function getProperValue($value)

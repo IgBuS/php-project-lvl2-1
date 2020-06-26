@@ -31,7 +31,9 @@ function formatElementToPretty($ast, $nestingLevel = 0)
                 $prevValue = getProperValue($astElement['prevValue'], $nestingLevel);
                 $curValue = getProperValue($astElement['curValue'], $nestingLevel);
 
-                $currentElement = "{$nesting}  + {$astElement['name']}: {$curValue}\n{$nesting}  - {$astElement['name']}: {$prevValue}";
+                $prevValueString = "{$nesting}  + {$astElement['name']}: {$curValue}";
+                $curValueString = "{$nesting}  - {$astElement['name']}: {$prevValue}";
+                $currentElement = "{$prevValueString}\n{$curValueString}";
                 break;
             default:
                 $value = getProperValue($astElement['value'], $nestingLevel);
